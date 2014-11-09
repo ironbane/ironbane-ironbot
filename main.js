@@ -60,7 +60,3 @@ handler.on('push', function (event) {
 	})
 })
 
-
-HC.postMessage(params, function(data) {
-  // Message has been sent!
-});
