@@ -2,6 +2,9 @@
 logs
 *.log
 
+*.swp
+
+
 ibconfig.json
 
 # Runtime data
