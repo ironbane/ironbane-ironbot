@@ -22,13 +22,7 @@ team_add = Any time a team is added or modified on a Repository
 watchAny = time a User watches the Repository
 
 */
-
-var fs = require('fs');
-var config;
-fs.readFile('./ibconfig.json', 'utf8', function (err, data) {
-            if (err) throw err;
-            config = JSON.parse(data);
-});
+var config = require('./ibconfig.json');
 
 var http = require('http');
 var createHandler = require('github-webhook-handler');
