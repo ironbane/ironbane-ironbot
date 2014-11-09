@@ -49,17 +49,19 @@ handler.on('error', function (err) {
 })
 
 handler.on('push', function (event) {
-  console.log('Received a push event for %s to %s',
-    event.payload.repository.name,
-    event.payload.ref)
+	var params = {
+		room: 959020, // Found in the JSON response from the call above
+		from: 'IronBot',
+		message: '<strong>Ironbot</strong> will update ' + event.payload.repository.name + ' to ' + event.payload.ref,
+		color: 'yellow'
+	};
+	HC.postMessage(params, function(data) {
+		console.log('Received a push event for %s to %s',
+    			event.payload.repository.name,
+    			event.payload.ref)
+	}
 })
 
-var params = {
-  room: 959020, // Found in the JSON response from the call above
-  from: 'IronBot',
-  message: '<strong>Ironbot</strong> is your daddy!',
-  color: 'yellow'
-};
 
 HC.postMessage(params, function(data) {
   // Message has been sent!
