@@ -6,6 +6,8 @@ logs
 *.sh
 
 /ibconfig.json
+ibconfig.json
+*ibconfig.json
 
 # Runtime data
 pids
