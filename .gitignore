@@ -5,8 +5,8 @@ logs
 *.swp
 *.sh
 
-/ibconfig.json
 ibconfig.json
+./ibconfig.json
 *ibconfig.json
 
 # Runtime data
