@@ -23,14 +23,14 @@ watchAny = time a User watches the Repository
 
 */
 
+var config = require('./ibconfig.json');
 var http = require('http');
 var createHandler = require('github-webhook-handler');
-var handler = createHandler({ path: '/', secret: 'aFrrEwDeT54d7yUijtyNbfa' });
+var handler = createHandler({ path: config.path, secret: config.gitsecret });
 
 var hipchat = require('node-hipchat');
 
-var HC = new hipchat('09dc7be7e02bdc9caf375ee67dcec9');
-
+var HC = new hipchat(config.hipsecret);
 
 var events = require('github-webhook-handler/events')
 Object.keys(events).forEach(function (event) {
@@ -42,14 +42,36 @@ http.createServer(function (req, res) {
     res.statusCode = 404
     res.end('no such location')
   })
-}).listen(4000)
+}).listen(config.port)
 
 handler.on('error', function (err) {
   console.log('Error:', err.message)
 })
 
 handler.on('push', function (event) {
-	HC.postMessage(	{room: 959020, // Found in the JSON response from the call above
+           switch(event.payload.repository.name) {
+                case 'ironbane-ironbot':
+                    // Just update the bot, don't do fancy stuff
+                    console.log('Do stuff for ironbot');
+                break;
+           
+                case 'ironbane-router':
+                    // Just update the router, don't do fancy stuff
+                    console.log('Do stuff for router');
+                break;
+           
+                case 'ironbane-server':
+                    // Swtich between a normal push and a tag
+                    // In case of a push update the dev server
+                    // In case of a tag update the play server
+                    console.log('Do stuff for server');
+                break;
+           
+                default:
+                // Don't do anything
+           }
+    // Send message to the HipChat so we all know what happened
+    HC.postMessage(	{room: config.hiproom, // Found in the JSON response from the call above
 		from: 'IronBot',
 		message: '<strong>Ironbot</strong> will update ' + event.payload.repository.name + ' to ' + event.payload.ref,
 		color: 'yellow'},
@@ -59,4 +81,3 @@ handler.on('push', function (event) {
     			event.payload.ref)
 	})
 })
-
