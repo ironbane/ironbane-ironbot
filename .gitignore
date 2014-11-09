@@ -3,7 +3,7 @@ logs
 *.log
 
 *.swp
-
+#*.sh
 
 ibconfig.json
 
