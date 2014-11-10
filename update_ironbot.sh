@@ -3,5 +3,5 @@ sleep 5
 cd /opt/ironbane-ironbot/
 /usr/bin/git pull
 /usr/bin/git checkout master
-/usr/bin/nodejs /opt/ironbane-ironbot/notify.js "I am up2date and will restart myself"
+/usr/bin/nodejs /opt/ironbane-ironbot/notify.js "I am up2date and will restart myself" blue
 /usr/bin/sudo restart ironbane-ironbot

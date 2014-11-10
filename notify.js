@@ -6,6 +6,6 @@ var HC = new hipchat(config.hipsecret);
 HC.postMessage(	{room: config.hiproom, // Found in the JSON response from the call above
     from: 'IronBot',
     message: '<strong>Ironbot</strong> ' + process.argv[2],
-    color: 'yellow'},
+    color: process.argv[3]},
     function(data) { }
 )
