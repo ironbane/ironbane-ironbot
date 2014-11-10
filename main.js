@@ -22,7 +22,7 @@ team_add = Any time a team is added or modified on a Repository
 watchAny = time a User watches the Repository
 
 */
-var config = require('./ibconfig.json');
+var config = require('/opt/ironbane-secret/ironbot-settings/ibconfig.json');
 var exec = require('exec');
 var http = require('http');
 var createHandler = require('github-webhook-handler');
