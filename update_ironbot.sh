@@ -6,4 +6,4 @@ cd /opt/ironbane-ironbot/
 /usr/bin/git reset --hard
 /usr/bin/sudo stop ironbane-ironbot
 /usr/bin/sudo start ironbane-ironbot
-/usr/bin/nodejs notify.js "ironbane-ironbot up2date and restarted"
+/usr/bin/nodejs /opt/ironbane-ironbot/notify.js "ironbane-ironbot up2date and restarted"

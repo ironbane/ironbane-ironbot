@@ -6,4 +6,4 @@ cd /opt/ironbane-router/
 /usr/bin/git reset --hard
 /usr/bin/sudo stop ironbane-router
 /usr/bin/sudo start ironbane-router
-/usr/bin/nodejs notify.js "ironbane-router up2date and restarted"
+/usr/bin/nodejs /opt/ironbane-ironbot/notify.js "ironbane-router up2date and restarted"
