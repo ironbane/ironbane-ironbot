@@ -1,4 +1,4 @@
-var config = require('./ibconfig.json');
+var config = require('/opt/ironbane-secret/ironbot-settings/ibconfig.json');
 var hipchat = require('node-hipchat');
 var HC = new hipchat(config.hipsecret);
 
