@@ -49,7 +49,17 @@ handler.on('error', function (err) {
 })
 
 handler.on('push', function (event) {
-           switch(event.payload.repository.name) {
+    // Send message to the HipChat so we all know what happened
+    HC.postMessage(	{room: config.hiproom, // Found in the JSON response from the call above
+            from: 'IronBot',
+            message: '<strong>Ironbot</strong> will update ' + event.payload.repository.name + ' to ' + event.payload.ref,
+            color: 'yellow'},
+        function(data) {
+            console.log('Received a push event for %s to %s',
+                event.payload.repository.name,
+                event.payload.ref)
+        })
+    switch(event.payload.repository.name) {
                 case 'ironbane-ironbot':
                     // Just update the bot, don't do fancy stuff
                     console.log('Do stuff for ironbot');
@@ -80,14 +90,4 @@ handler.on('push', function (event) {
                 default:
                 // Don't do anything
            }
-    // Send message to the HipChat so we all know what happened
-    HC.postMessage(	{room: config.hiproom, // Found in the JSON response from the call above
-		from: 'IronBot',
-		message: '<strong>Ironbot</strong> will update ' + event.payload.repository.name + ' to ' + event.payload.ref,
-		color: 'yellow'},
-		function(data) {
-			console.log('Received a push event for %s to %s',
-    			event.payload.repository.name,
-    			event.payload.ref)
-	})
 })
