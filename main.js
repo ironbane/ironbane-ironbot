@@ -63,7 +63,7 @@ handler.on('push', function (event) {
                 case 'ironbane-ironbot':
                     // Just update the bot, don't do fancy stuff
                     console.log('Do stuff for ironbot');
-                    exec('./update_ironbot.sh', function(err, out, code){
+                    exec('/opt/ironbane-ironbot/update_ironbot.sh', function(err, out, code){
                          console.log(out);
                     });
                 break;
@@ -71,7 +71,7 @@ handler.on('push', function (event) {
                 case 'ironbane-router':
                     // Just update the router, don't do fancy stuff
                     console.log('Do stuff for router');
-                    exec('./update_router.sh', function(err, out, code){
+                    exec('/opt/ironbane-ironbot/update_router.sh', function(err, out, code){
                         console.log(out);
                     });
                 break;
@@ -81,10 +81,10 @@ handler.on('push', function (event) {
                     // In case of a push update the dev server
                     // In case of a tag update the play server
                     console.log('Do stuff for server');
-                    exec('./update_dev.sh', function(err, out, code){
+                    exec('/opt/ironbane-ironbot/update_dev.sh', function(err, out, code){
                         console.log(out);
                     });
-                    //exec('./update_play.sh');
+                    //exec('/opt/ironbane-ironbot/update_play.sh');
                 break;
            
                 default:
