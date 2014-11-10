@@ -8,4 +8,3 @@ copy the conf file to /etc/init/ironbane-ironbot.conf and use start/stop command
 * start ironbane-ironbot
 * stop ironbane-ironbot
 * restart ironbane-ironbot
-
