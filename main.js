@@ -52,47 +52,53 @@ handler.on('error', function (err) {
 });
 
 handler.on('push', function (event) {
+    console.log('Received a push event for %s to %s',
+        event.payload.repository.name,
+        event.payload.ref);
+
     // Send message to the HipChat so we all know what happened
-    HC.postMessage({
-            room: config.hiproom, // Found in the JSON response from the call above
-            from: 'IronBot',
-            message: '<strong>Ironbot</strong> will update ' + event.payload.repository.name + ' to ' + event.payload.ref,
-            color: 'yellow'
-        },
-        function (data) {
-            console.log('Received a push event for %s to %s',
-                event.payload.repository.name,
-                event.payload.ref);
-        });
-    switch (event.payload.repository.name) {
-    case 'ironbane-ironbot':
-        // Just update the bot, don't do fancy stuff
-        console.log('Do stuff for ironbot');
-        exec('/bin/bash /opt/ironbane-ironbot/update_ironbot.sh', function (err, out, code) {
-            console.log(out);
-        });
-        break;
+    if (event.payload.ref === 'refs/heads/master') {
+        HC.postMessage({
+                room: config.hiproom, // Found in the JSON response from the call above
+                from: 'IronBot',
+                message: '<strong>Ironbot</strong> will update ' + event.payload.repository.name + ' to ' + event.payload.ref,
+                color: 'yellow'
+            },
+            function (data) {
+                // TODO: something with this response?
+            });
 
-    case 'ironbane-router':
-        // Just update the router, don't do fancy stuff
-        console.log('Do stuff for router');
-        exec('/bin/bash /opt/ironbane-ironbot/update_router.sh', function (err, out, code) {
-            console.log(out);
-        });
-        break;
+        switch (event.payload.repository.name) {
+        case 'ironbane-ironbot':
+            // Just update the bot, don't do fancy stuff
+            console.log('Do stuff for ironbot');
+            exec('/bin/bash /opt/ironbane-ironbot/update_ironbot.sh', function (err, out, code) {
+                console.log(out);
+            });
+            break;
 
-    case 'ironbane-server':
-        // Swtich between a normal push and a tag
-        // In case of a push update the dev server
-        // In case of a tag update the play server
-        console.log('Do stuff for server');
-        exec('/bin/bash /opt/ironbane-ironbot/update_dev.sh', function (err, out, code) {
-            console.log(out);
-        });
-        //exec('/bin/bash /opt/ironbane-ironbot/update_play.sh');
-        break;
+        case 'ironbane-router':
+            // Just update the router, don't do fancy stuff
+            console.log('Do stuff for router');
+            exec('/bin/bash /opt/ironbane-ironbot/update_router.sh', function (err, out, code) {
+                console.log(out);
+            });
+            break;
 
-    default:
-        // Don't do anything
+        case 'ironbane-server':
+            // Swtich between a normal push and a tag
+            // In case of a push update the dev server
+            // In case of a tag update the play server
+            console.log('Do stuff for server');
+            exec('/bin/bash /opt/ironbane-ironbot/update_dev.sh', function (err, out, code) {
+                console.log(out);
+            });
+            //exec('/bin/bash /opt/ironbane-ironbot/update_play.sh');
+            break;
+
+        default:
+            // Don't do anything
+            break;
+        }
     }
 });
