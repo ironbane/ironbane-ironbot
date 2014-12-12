@@ -22,6 +22,7 @@ team_add = Any time a team is added or modified on a Repository
 watchAny = time a User watches the Repository
 
 */
+
 var config = require('/opt/ironbane-secret/ironbot-settings/ibconfig.json');
 var exec = require('exec');
 var http = require('http');
@@ -30,6 +31,13 @@ var handler = createHandler({
     path: config.path,
     secret: config.gitsecret
 });
+
+var NRP = require('node-redis-pubsub'),
+    nrpConfig = {
+        port: 6379, // TODO: use config
+        scope: 'ironbot'
+    },
+    nrp = new NRP(nrpConfig);
 
 var hipchat = require('node-hipchat');
 
@@ -51,24 +59,18 @@ handler.on('error', function (err) {
     console.log('Error:', err.message);
 });
 
-handler.on('push', function (event) {
-    console.log('Received a push event for %s to %s',
-        event.payload.repository.name,
-        event.payload.ref);
+function updateServer(serverId, revision) {
+    HC.postMessage({
+            room: config.hiproom, // Found in the JSON response from the call above
+            from: 'IronBot',
+            message: '<strong>Ironbot</strong> will update ' + serverId + ' to ' + revision,
+            color: 'yellow'
+        },
+        function (data) {
+            // TODO: something with this response?
+        });
 
-    // Send message to the HipChat so we all know what happened
-    if (event.payload.ref === 'refs/heads/master') {
-        HC.postMessage({
-                room: config.hiproom, // Found in the JSON response from the call above
-                from: 'IronBot',
-                message: '<strong>Ironbot</strong> will update ' + event.payload.repository.name + ' to ' + event.payload.ref,
-                color: 'yellow'
-            },
-            function (data) {
-                // TODO: something with this response?
-            });
-
-        switch (event.payload.repository.name) {
+    switch (serverId) {
         case 'ironbane-ironbot':
             // Just update the bot, don't do fancy stuff
             console.log('Do stuff for ironbot');
@@ -85,20 +87,52 @@ handler.on('push', function (event) {
             });
             break;
 
-        case 'ironbane-server':
-            // Swtich between a normal push and a tag
-            // In case of a push update the dev server
-            // In case of a tag update the play server
-            console.log('Do stuff for server');
+        // TODO: pass revision in as arg $1 for checkout
+        case 'ironbane-dev-server':
+            console.log('Do stuff for dev server');
             exec('/bin/bash /opt/ironbane-ironbot/update_dev.sh', function (err, out, code) {
                 console.log(out);
             });
-            //exec('/bin/bash /opt/ironbane-ironbot/update_play.sh');
+            break;
+
+        case 'ironbane-play-server':
+            console.log('Do stuff for play server');
+            exec('/bin/bash /opt/ironbane-ironbot/update_play.sh', function (err, out, code) {
+                console.log(out);
+            });
             break;
 
         default:
             // Don't do anything
             break;
+    }
+}
+
+nrp.on('update', function (data) {
+    var server = data.server,
+        rev = data.rev;
+
+    // do it!
+    updateServer(server, rev);
+});
+
+handler.on('push', function (event) {
+    var repo = event.payload.repository.name,
+        ref = event.payload.ref;
+
+    console.log('Received a push event for %s to %s', repo, ref);
+
+    // we update all on master, tho the "ironbane-server" is split by master & tags... other servers are not updated based on tags
+    if (ref === 'refs/heads/master') {
+        if (repo === 'ironbane-server') {
+            repo = 'ironbane-dev-server';
+        }
+        updateServer(repo, ref);
+    } else if (ref.search('tags') >= 0) {
+        if (repo === 'ironbane-server') {
+            repo = 'ironbane-play-server';
+            updateServer(repo, ref);
         }
     }
+
 });
