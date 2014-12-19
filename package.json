@@ -3,6 +3,7 @@
     "exec": "^0.1.2",
     "fs": "0.0.2",
     "github-webhook-handler": "^0.2.1",
+    "nconf": "^0.7.1",
     "node-hipchat": "^0.4.5",
     "node-redis-pubsub": "^0.2.1"
   }
